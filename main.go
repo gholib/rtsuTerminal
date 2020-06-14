@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gholib/rtsuTerminal/config"
 	"github.com/julienschmidt/httprouter"
@@ -26,7 +31,29 @@ func main() {
 		}
 	}()
 
-	// router.POST("/test", controllers.AuthorizationHandler)
+	srv := &http.Server{
+		Addr:         conf.Service.Addr,
+		ReadTimeout:  40 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		Handler:      router,
+	}
+	ctx, cancelFun := context.WithCancel(context.Background())
+	go func() { // gracefull shutdown
+		sigint := make(chan os.Signal)
+		signal.Notify(sigint, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)
+		s := <-sigint
+		log.Println("server received signal", s)
+		defer cancelFun()
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Println("server: couldn't shutdown because of " + err.Error())
+		}
+	}()
 
-	log.Fatal(http.ListenAndServe(conf.Server.Addr, router))
+	initRouters()
+
+	log.Fatal("Listening error:", srv.ListenAndServe())
+}
+
+func initRouters() {
+	router.GET("/v0/api/ping", controllers.Ping)
 }
