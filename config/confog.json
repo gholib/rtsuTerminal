@@ -1,0 +1,9 @@
+{
+    "server":{
+      "name": "rtsuTerminal",
+      "addr": "0.0.0.0:8080"
+    },
+    "database": {
+      "connString": "host=localhost user=postgres password=postgres database=rtsu_terminal"
+    }
+  }
