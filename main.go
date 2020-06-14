@@ -34,7 +34,7 @@ func main() {
 	srv := &http.Server{
 		Addr:         conf.Service.Addr,
 		ReadTimeout:  40 * time.Second,
-		WriteTimeout: 60 * time.Second,
+		WriteTimeout: 40 * time.Second,
 		Handler:      router,
 	}
 	ctx, cancelFun := context.WithCancel(context.Background())
