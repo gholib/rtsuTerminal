@@ -11,11 +11,9 @@ import (
 	"time"
 
 	"github.com/gholib/rtsuTerminal/config"
-	"github.com/julienschmidt/httprouter"
-)
-
-var (
-	router = httprouter.New()
+	"github.com/gholib/rtsuTerminal/database"
+	"github.com/gholib/rtsuTerminal/migrations"
+	"github.com/gholib/rtsuTerminal/router"
 )
 
 func main() {
@@ -32,10 +30,10 @@ func main() {
 	}()
 
 	srv := &http.Server{
-		Addr:         conf.Service.Addr,
+		Addr:         conf.Server.Addr,
 		ReadTimeout:  40 * time.Second,
 		WriteTimeout: 40 * time.Second,
-		Handler:      router,
+		Handler:      router.Router,
 	}
 	ctx, cancelFun := context.WithCancel(context.Background())
 	go func() { // gracefull shutdown
@@ -49,11 +47,16 @@ func main() {
 		}
 	}()
 
-	initRouters()
+	//database
+	database.Connect()
+	defer database.DB.Close()
+
+	router.InitRouters()
+	migrate()
 
 	log.Fatal("Listening error:", srv.ListenAndServe())
 }
 
-func initRouters() {
-	router.GET("/v0/api/ping", controllers.Ping)
+func migrate() {
+	migrations.Run()
 }
