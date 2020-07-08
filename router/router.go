@@ -14,4 +14,7 @@ var (
 func InitRouters() {
 	Router.GET("/v0/api/ping", controllers.Ping)
 	Router.POST("/v0/api/user", controllers.CreateUser)
+
+	// Terminals
+	Router.POST("/v0/api/terminal", controllers.CreateTerminal)
 }
