@@ -3,23 +3,22 @@ package models
 import "time"
 
 type Terminal struct {
-	Id        uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	Num       int32  `gorm:"BIGINT UNSIGNED; NOT NULL AUTO_INCREMENT UNIQUE" json:"num"`
-	Pass      string `gorm:"varchar(100);not null" json:"pass"`
-	Token     string `gorm:"varchar(100); not null" json:"token"`
-	Address   string `gorm:"varchar(255); not null"json:"address"`
-	AgentId   int    `gorm:"varchar(100); not null" json:"agent_id"`
-	AgentName string `gorm:"varchar(255);not null" json:"agent_name"`
-	Mcode     string `gorm:"varchar(100);default ''" json:"mcode"`
-	Status bool `gorm:"BOOLEAN DEFAULT FALSE" json:"status"`
-     Regdate time.Time  `gorm:"default:current_timestamp()" json:"regdate" `
-
+	Id        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	Num       int32     `gorm:"BIGINT UNSIGNED; NOT NULL AUTO_INCREMENT UNIQUE" json:"num"`
+	Pass      string    `gorm:"varchar(100);not null" json:"pass"`
+	Token     string    `gorm:"varchar(100); not null" json:"token"`
+	Address   string    `gorm:"varchar(255); not null"json:"address"`
+	AgentId   int       `gorm:"varchar(100); not null" json:"agent_id"`
+	AgentName string    `gorm:"varchar(255);not null" json:"agent_name"`
+	Mcode     string    `gorm:"varchar(100);default ''" json:"mcode"`
+	Status    bool      `gorm:"boolean;default false" json:"status"`
+	Regdate   time.Time `gorm:"default:current_timestamp()" json:"regdate" `
 }
 
 func NewTerminal(terminal Terminal) error {
 	db := Connect()
 	defer db.Close()
-	err := db.Create(&terminal ).Error
+	err := db.Create(&terminal).Error
 	return err
 
 }

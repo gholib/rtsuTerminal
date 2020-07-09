@@ -5,7 +5,8 @@ import "github.com/gholib/rtsuTerminal/models"
 func Automigrate()  {
 db := models.Connect()
 defer db.Close()
-db.AutoMigrate(&models.Terminal{})
+db.DropTableIfExists(&models.Terminal{}, &models.Service{})
+db.AutoMigrate(&models.Terminal{}, &models.Service{})
 
 	
 }

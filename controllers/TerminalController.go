@@ -27,3 +27,9 @@ func CreateTerminal(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	
 }
+
+func GetTermimals( w http.ResponseWriter, r *http.Request, params httprouter.Params)  {
+		terminals := models.GetAll(models.TERMINALS)
+		utils.ToJson(w, terminals, http.StatusOK)
+}
+
