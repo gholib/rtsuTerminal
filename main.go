@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/gholib/rtsuTerminal/models"
 	"log"
 	"net/http"
 	"os"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	"github.com/gholib/rtsuTerminal/config"
-	"github.com/gholib/rtsuTerminal/database"
 	"github.com/gholib/rtsuTerminal/migrations"
 	"github.com/gholib/rtsuTerminal/router"
 )
@@ -48,8 +48,9 @@ func main() {
 	}()
 
 	//database
-	database.Connect()
-	defer database.DB.Close()
+	db :=	models.Connect()
+
+	defer db.Close()
 
 	router.InitRouters()
 	migrate()
@@ -58,5 +59,5 @@ func main() {
 }
 
 func migrate() {
-	migrations.Run()
+	migrations.Automigrate()
 }
